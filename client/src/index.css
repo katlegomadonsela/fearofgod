@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border;
+}
+
+input {
+  @apply border border-[#ddd] w-full mb-4 px-4 py-2
+}
+
+button[type="submit"] {
+  @apply border py-2 hover:bg-neutral-900 hover:text-white
+}
+
+.custom--nav-links a {
+  @apply py-4 hover:underline underline-offset-[4px]
+}
+
+.custom--dropdown-top-link {
+  @apply text-gray-700 mb-1
+}
+
+.custom--dropdown-links {
+  @apply text-gray-400
+}
+
+.custom--dropdown-bottom-link {
+  @apply mt-4
+}
+
+.custom--hide {
+  @apply hidden
+}
+
+.hovering {
+  @apply underline
+}
+
+.custom--splash-index {
+  @apply w-full h-screen bg-[url('./assets/splash2.jpeg')] bg-cover
+}
