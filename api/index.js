@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 const http = require('http');
 const User = require('./models/User.js');
 
-const bcryptSalt = bcrypt.genSaltSync(10);
 
 dotenv.config();
 const app = express();
@@ -26,25 +25,66 @@ app.get('/cart', (req, res) => {
   res.send("Hello from the backend! Your cart has 3 items :)");
 });
 
+
+
+
+app.get('/account/login', (req, res) => {
+  res.status(200).send("From Backend: Welcome to the login page");
+});
+
+app.post('/account/login', async (req, res) => {
+  const {email, password} = req.body;
+  try {
+    const userDoc = await User.findOne({email: email});
+    if(userDoc) {
+      const isPasswordOk = bcrypt.compareSync(password, userDoc.password);
+      console.log(isPasswordOk);
+
+      if(isPasswordOk) {
+        res.status(200);
+        res.json({email, hashPassword: userDoc.password, msg: `Backend Response: Congrats!! User with email: ${email} was found! Secret password is ${userDoc.password}`});
+        console.log("User logged in!")
+      } else {
+        res.json({msg: `Oops, sorry!! Incorrect email/password combination!`});
+        console.log("Wrong password!");
+      }
+    } else {
+      res.json({msg: "User with that email does not exist!"})
+      console.log("User with that email was not found");
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+
+
+
 app.get('/account/register', (req, res) => {
-  res.send('Welcome to the register page');
-  console.log(req.body);
+  res.status(200);
+  res.send('From backend: Welcome to the register page');
 });
 
 app.post('/account/register', async (req, res) => {
   const {name, email, password} = req.body;
+  let bcryptSalt = bcrypt.genSaltSync(10);
+  let hashPassword = bcrypt.hashSync(password, bcryptSalt);
   try {
     const userDoc = await User.create({
       name,
       email,
-      password: bcrypt.hashSync(password, bcryptSalt)
+      password: hashPassword
     });
     console.log(userDoc);
     res.status(200).json(userDoc);
   } catch (err) {
     console.log(err.message)
   }
-})
+});
+
+
+
 
 const server = http.createServer(app);
 
