@@ -9,6 +9,7 @@ import Register from './pages/account/Register';
 import Cart from './components/navigation/cart/Cart';
 
 axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

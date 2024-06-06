@@ -1,29 +1,48 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [redirect, setRedirect] = useState(false);
 
-  const [apiData, setApiData] = useState(null);
+  // const [apiData, setApiData] = useState(null);
 
   const handleLoginForm = async (event) => {
     event.preventDefault();
     
-    if(!email || !password ) {
-      alert("Please enter your email and password!");
-      return;
-    } else {
-      try {
+    try {
+      if(!email || !password) {
+        alert("Please enter both your email and password");
+        return;
+      } else {
         const loginData = {email, password};
-        const response = await axios.post('/account/login', loginData);
+        const response = await axios.post('/account/login', loginData, {withCredentials: true});
         console.log(response);
         alert(response.data.msg);
+        if(response.data.msg == 'From API: Password ok!') {
+          setRedirect(true);
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+
+    if(email && password) {
+      const loginData = {email, password};
+      try {
+        const response = await axios.post('/account/login', loginData, {withCredentials: true});
+        console.log(response);
       } catch (error) {
         console.log(error);
       }
     }
+  }
+
+  if(redirect === true) {
+    return <Navigate to={'/'}/>
   }
 
   return (
